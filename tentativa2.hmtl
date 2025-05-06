@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mundo dos Conjuntos</title>
+  <!-- Bibliotecas -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Fredoka', sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, #fcdff3, #e0f7ff);
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      flex-direction: column;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      color: #c94fcf;
+      text-shadow: 1px 1px 2px #fff;
+    }
+    #inicio, .content {
+      display: none;
+      text-align: center;
+    }
+    .btn {
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      background-color: #ff91ca;
+      color: white;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin: 10px;
+    }
+    .btn:hover {
+      background-color: #e76fb5;
+    }
+    .content {
+      margin-top: 30px;
+      padding: 20px;
+      background: #fff0f9;
+      border-radius: 20px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      max-width: 600px;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="animate__animated animate__fadeInDown">🌸 Mundo dos Conjuntos 🌸</h1>
+  <div id="inicio" class="animate__animated animate__fadeIn">
+    <button class="btn" onclick="mostrarFase()">JOGAR</button>
+  </div>
+
+  <!-- FASES -->
+  <div class="content animate__animated animate__bounceIn" id="fase"></div>
+
+  <script>
+    const fases = [
+      {
+        titulo: "Fase 1: Definição de Conjuntos",
+        descricao: "Qual das opções abaixo representa corretamente um conjunto?",
+        opcoes: [
+          { texto: "A = {2, 4, 6, 8}", correta: true },
+          { texto: "B = {grande, bonito, legal}", correta: false },
+          { texto: "C = {azul, verde, cor preferida}", correta: false }
+        ]
+      },
+      {
+        titulo: "Fase 2: União",
+        descricao: "Se A = {a, b, c} e B = {b, c, d}, qual é A ∪ B?",
+        opcoes: [
+          { texto: "{a, b, c, d}", correta: true },
+          { texto: "{b, c}", correta: false },
+          { texto: "{a, d}", correta: false }
+        ]
+      },
+      {
+        titulo: "Fase 3: Interseção",
+        descricao: "Se A = {x, y, z} e B = {w, x, z}, qual é A ∩ B?",
+        opcoes: [
+          { texto: "{x, z}", correta: true },
+          { texto: "{x, y, z, w}", correta: false },
+          { texto: "{y}", correta: false }
+        ]
+      },
+      {
+        titulo: "Fase 4: Complemento",
+        descricao: "Se U = {1,2,3,4,5} e A = {2,4}, qual é o complemento de A?",
+        opcoes: [
+          { texto: "{1, 3, 5}", correta: true },
+          { texto: "{2, 4}", correta: false },
+          { texto: "{1, 2, 3, 4, 5}", correta: false }
+        ]
+      },
+      {
+        titulo: "Fase 5: Subconjuntos",
+        descricao: "Se A = {1, 2, 3}, qual dos conjuntos abaixo é um subconjunto de A?",
+        opcoes: [
+          { texto: "{1, 3}", correta: true },
+          { texto: "{3, 4}", correta: false },
+          { texto: "{1, 2, 4}", correta: false }
+        ]
+      },
+      {
+        titulo: "Fase 6: Diferença",
+        descricao: "Se A = {1,2,3,4} e B = {2,4}, qual é A - B?",
+        opcoes: [
+          { texto: "{1, 3}", correta: true },
+          { texto: "{2, 4}", correta: false },
+          { texto: "{1, 2, 3, 4}", correta: false }
+        ]
+      },
+      {
+        titulo: "Fase 7: Diferença Simétrica",
+        descricao: "Se A = {1,2,3} e B = {2,3,4}, qual é A △ B?",
+        opcoes: [
+          { texto: "{1, 4}", correta: true },
+          { texto: "{2, 3}", correta: false },
+          { texto: "{1, 2, 3, 4}", correta: false }
+        ]
+      },
+      {
+        titulo: "Fase 8: Conjunto das Partes",
+        descricao: "Qual é o conjunto das partes de A = {x, y}?",
+        opcoes: [
+          { texto: "{ {}, {x}, {y}, {x, y} }", correta: true },
+          { texto: "{ {x}, {y} }", correta: false },
+          { texto: "{ {}, {x, y} }", correta: false }
+        ]
+      },
+      {
+        titulo: "Fase Bônus: O que NÃO é um conjunto?",
+        descricao: "Escolha a opção que NÃO representa um conjunto bem definido.",
+        opcoes: [
+          { texto: "A = {felicidade, coragem, raiva}", correta: true },
+          { texto: "B = {1, 2, 3}", correta: false },
+          { texto: "C = {a, e, i, o, u}", correta: false }
+        ]
+      }
+    ];
+
+    let indice = 0;
+
+    window.onload = () => {
+      document.getElementById('inicio').style.display = 'block';
+    };
+
+    function mostrarFase() {
+      document.getElementById('inicio').style.display = 'none';
+      mostrarConteudo();
+    }
+
+    function mostrarConteudo() {
+      const fase = fases[indice];
+      const embaralhadas = _.shuffle(fase.opcoes);
+      const html = `
+        <h2>${fase.titulo}</h2>
+        <p>${fase.descricao}</p>
+        ${embaralhadas.map(opcao => `<button class="btn" onclick="resposta(${opcao.correta})">${opcao.texto}</button>`).join('')}
+      `;
+      document.getElementById('fase').innerHTML = html;
+      document.getElementById('fase').style.display = 'block';
+    }
+
+    function resposta(correta) {
+      Swal.fire({
+        title: correta ? 'Parabéns! 🎉' : 'Oops! Tente novamente 😅',
+        icon: correta ? 'success' : 'error',
+        confirmButtonText: 'Continuar'
+      }).then(() => {
+        if (correta) {
+          indice++;
+          if (indice < fases.length) {
+            mostrarConteudo();
+          } else {
+            Swal.fire('Fim do jogo!', 'Você completou todas as fases!', 'success');
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
